@@ -27,6 +27,7 @@ export function FileUpload({
   selectedFile,
 }: FileUploadProps) {
   const t = useTranslations("analyze");
+  const tf = useTranslations("fileUpload");
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,12 +36,12 @@ export function FileUpload({
       setError(null);
 
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        setError("Unsupported file type. Please upload JPG, PNG, WebP, or PDF.");
+        setError(tf("unsupportedType"));
         return;
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        setError("File too large. Maximum size is 10MB.");
+        setError(tf("fileTooLarge"));
         return;
       }
 
@@ -116,7 +117,7 @@ export function FileUpload({
       >
         <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
         <p className="text-sm font-medium">
-          Drag and drop or click to upload
+          {tf("dragAndDrop")}
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
           {t("uploadFormats")}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {
-  getOrCreateSessionId,
+  getAuthenticatedUserId,
   getUsageCount,
   checkPaymentStatus,
   FREE_LIMIT,
@@ -8,24 +8,25 @@ import {
 
 export async function GET() {
   try {
-    const sessionId = await getOrCreateSessionId();
-    const used = await getUsageCount(sessionId);
-    const payment = await checkPaymentStatus(sessionId);
+    const userId = await getAuthenticatedUserId();
+    const used = await getUsageCount(userId);
+    const payment = await checkPaymentStatus(userId);
 
-    const remaining = payment.isPaid ? Infinity : Math.max(0, FREE_LIMIT - used);
+    const remaining = payment.isPaid
+      ? -1
+      : Math.max(0, FREE_LIMIT - used);
 
     return NextResponse.json({
       used,
       limit: FREE_LIMIT,
-      remaining: payment.isPaid ? -1 : remaining, // -1 means unlimited
+      remaining,
       isPaid: payment.isPaid,
       subscriptionStatus: payment.subscriptionStatus,
     });
-  } catch (error) {
-    console.error("Usage check error:", error);
+  } catch {
     return NextResponse.json(
-      { error: "Failed to check usage" },
-      { status: 500 }
+      { error: "Authentication required" },
+      { status: 401 }
     );
   }
 }

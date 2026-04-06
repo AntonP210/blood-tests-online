@@ -9,6 +9,7 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 export default function PaymentSuccessPage() {
   const t = useTranslations("payment");
+  const tv = useTranslations("paymentVerification");
 
   const [status, setStatus] = useState<"loading" | "verified" | "failed">(
     "loading"
@@ -43,7 +44,7 @@ export default function PaymentSuccessPage() {
         <Card className="text-center">
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            <p className="text-muted-foreground">Verifying your payment...</p>
+            <p className="text-muted-foreground">{tv("verifying")}</p>
           </CardContent>
         </Card>
       </div>
@@ -58,12 +59,11 @@ export default function PaymentSuccessPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
               <XCircle className="h-8 w-8 text-red-600" />
             </div>
-            <CardTitle className="text-2xl">Payment Not Verified</CardTitle>
+            <CardTitle className="text-2xl">{tv("notVerifiedTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              We couldn&apos;t verify your payment. If you were charged, please
-              contact support.
+              {tv("notVerifiedMessage")}
             </p>
             <Button
               render={<Link href="/pricing" />}

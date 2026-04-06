@@ -32,8 +32,9 @@ export function getVariantId(tier: PaymentTier): string {
 
 export async function createCheckoutSession(
   tier: PaymentTier,
-  sessionId: string,
-  redirectUrl: string
+  userId: string,
+  redirectUrl: string,
+  locale = "en"
 ) {
   setup();
 
@@ -47,12 +48,12 @@ export async function createCheckoutSession(
   const checkout = await createCheckout(storeId, variantId, {
     checkoutData: {
       custom: {
-        session_id: sessionId,
+        user_id: userId,
         tier,
       },
     },
     productOptions: {
-      redirectUrl: `${redirectUrl}/en/payment/success`,
+      redirectUrl: `${redirectUrl}/${locale}/payment/success`,
     },
   });
 

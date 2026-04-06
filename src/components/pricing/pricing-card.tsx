@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,6 +21,8 @@ interface PricingCardProps {
 
 export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
   const [loading, setLoading] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations("pricing");
 
   const handleClick = async () => {
     if (tier.id === "free") return;
@@ -29,7 +32,7 @@ export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tier.id }),
+        body: JSON.stringify({ tier: tier.id, locale }),
       });
 
       const data = await response.json();
@@ -80,7 +83,7 @@ export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : tier.id === "free" ? (
-            "Current Plan"
+            t("currentPlan")
           ) : (
             buttonLabel
           )}

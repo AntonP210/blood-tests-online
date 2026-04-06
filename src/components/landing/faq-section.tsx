@@ -36,7 +36,7 @@ export function FAQSection() {
               >
                 <span className="text-sm font-semibold sm:text-base">{t(faq.q)}</span>
                 <ChevronDown
-                  className={`ml-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 sm:h-5 sm:w-5 ${
+                  className={`ms-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 sm:h-5 sm:w-5 ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
                 />

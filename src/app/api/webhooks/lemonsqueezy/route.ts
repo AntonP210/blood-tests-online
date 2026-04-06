@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { getRedis } from "@/lib/rate-limit";
 import { verifyWebhookSignature } from "@/lib/lemonsqueezy";
+
+// Use service role client for webhook (bypasses RLS)
+function getServiceClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error("Supabase service role credentials not configured");
+  }
+  return createClient(url, key);
+}
 
 interface WebhookEvent {
   meta: {
     event_name: string;
     custom_data?: {
-      session_id?: string;
+      user_id?: string;
       tier?: string;
     };
   };
@@ -14,11 +25,10 @@ interface WebhookEvent {
     id: string;
     attributes: {
       status?: string;
+      order_id?: number;
+      subscription_id?: number;
       ends_at?: string | null;
       renews_at?: string | null;
-      first_subscription_item?: {
-        current_period_end?: string;
-      } | null;
     };
   };
 }
@@ -50,49 +60,64 @@ export async function POST(request: Request) {
   }
 
   const redis = getRedis();
-  if (!redis) {
-    console.error("Redis not available for webhook processing");
-    return NextResponse.json(
-      { error: "Service unavailable" },
-      { status: 503 }
-    );
-  }
-
   const event: WebhookEvent = JSON.parse(rawBody);
   const eventName = event.meta.event_name;
   const eventId = `${eventName}:${event.data.id}`;
 
   // Idempotency check
-  const eventKey = `webhook:${eventId}`;
-  const alreadyProcessed = await redis.get<string>(eventKey);
-  if (alreadyProcessed) {
-    return NextResponse.json({ received: true, deduplicated: true });
+  if (redis) {
+    const eventKey = `webhook:${eventId}`;
+    const alreadyProcessed = await redis.get<string>(eventKey);
+    if (alreadyProcessed) {
+      return NextResponse.json({ received: true, deduplicated: true });
+    }
   }
 
   try {
-    const sessionId = event.meta.custom_data?.session_id;
+    const userId = event.meta.custom_data?.user_id;
     const tier = event.meta.custom_data?.tier;
 
-    if (!sessionId) {
-      console.error("Webhook: missing session_id in custom_data", { eventId });
-      await redis.set(eventKey, "1", { ex: 60 * 60 * 24 });
+    if (!userId) {
+      console.error("Webhook: missing user_id in custom_data", { eventId });
+      if (redis) await redis.set(`webhook:${eventId}`, "1", { ex: 86400 });
       return NextResponse.json({ received: true });
     }
+
+    const supabase = getServiceClient();
 
     switch (eventName) {
       case "order_created": {
         if (!tier) break;
 
         if (tier === "lifetime") {
-          // Lifetime: effectively permanent
-          await redis.set(`subscription:${sessionId}`, "active", {
-            ex: 60 * 60 * 24 * 365 * 100,
+          // Write to Postgres
+          await supabase.from("payments").insert({
+            user_id: userId,
+            tier: "lifetime",
+            lemonsqueezy_order_id: String(event.data.id),
+            status: "active",
+            credits_remaining: 0,
+            expires_at: null,
           });
+          // Cache in Redis
+          if (redis) {
+            await redis.set(`subscription:${userId}`, "active", {
+              ex: 60 * 60 * 24 * 365 * 100,
+            });
+          }
         } else if (tier === "one_time") {
-          // One-time: 1 credit, expires in 30 days
-          await redis.set(`credits:${sessionId}`, 1, {
-            ex: 60 * 60 * 24 * 30,
+          await supabase.from("payments").insert({
+            user_id: userId,
+            tier: "one_time",
+            lemonsqueezy_order_id: String(event.data.id),
+            status: "active",
+            credits_remaining: 1,
           });
+          if (redis) {
+            await redis.set(`credits:${userId}`, 1, {
+              ex: 60 * 60 * 24 * 30,
+            });
+          }
         }
         break;
       }
@@ -100,36 +125,64 @@ export async function POST(request: Request) {
       case "subscription_created":
       case "subscription_updated": {
         const status = event.data.attributes.status;
+        const renewsAt = event.data.attributes.renews_at;
+        const endsAt = event.data.attributes.ends_at;
+
         if (status === "active") {
-          // Use renews_at or ends_at to calculate TTL
-          const renewsAt = event.data.attributes.renews_at;
-          const endsAt = event.data.attributes.ends_at;
-          const dateStr = renewsAt || endsAt;
+          const expiresAt = renewsAt || endsAt || null;
 
-          let ttl = 60 * 60 * 24 * 32; // 32-day default
-          if (dateStr) {
-            const endTime = Math.floor(new Date(dateStr).getTime() / 1000);
-            const now = Math.floor(Date.now() / 1000);
-            const computed = endTime - now + 86400; // 1-day buffer
-            if (computed > 0) ttl = computed;
+          // Upsert to Postgres
+          await supabase.from("payments").upsert(
+            {
+              user_id: userId,
+              tier: tier || "monthly",
+              lemonsqueezy_subscription_id: String(event.data.id),
+              status: "active",
+              expires_at: expiresAt,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" }
+          );
+
+          // Cache in Redis
+          if (redis) {
+            let ttl = 60 * 60 * 24 * 32;
+            if (expiresAt) {
+              const endTime = Math.floor(
+                new Date(expiresAt).getTime() / 1000
+              );
+              const computed =
+                endTime - Math.floor(Date.now() / 1000) + 86400;
+              if (computed > 0) ttl = computed;
+            }
+            await redis.set(`subscription:${userId}`, "active", { ex: ttl });
           }
-
-          await redis.set(`subscription:${sessionId}`, "active", { ex: ttl });
         } else if (status === "cancelled" || status === "expired") {
-          await redis.del(`subscription:${sessionId}`);
+          await supabase
+            .from("payments")
+            .update({ status: "cancelled", updated_at: new Date().toISOString() })
+            .eq("user_id", userId);
+
+          if (redis) await redis.del(`subscription:${userId}`);
         }
         break;
       }
 
       case "subscription_cancelled":
       case "subscription_expired": {
-        await redis.del(`subscription:${sessionId}`);
+        const supabaseClient = getServiceClient();
+        await supabaseClient
+          .from("payments")
+          .update({ status: "cancelled", updated_at: new Date().toISOString() })
+          .eq("user_id", userId);
+
+        if (redis) await redis.del(`subscription:${userId}`);
         break;
       }
     }
 
     // Mark event as processed
-    await redis.set(eventKey, "1", { ex: 60 * 60 * 24 });
+    if (redis) await redis.set(`webhook:${eventId}`, "1", { ex: 86400 });
 
     return NextResponse.json({ received: true });
   } catch (error) {

@@ -22,7 +22,7 @@ export function Footer() {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              <span>Zero data retention. Your privacy, guaranteed.</span>
+              <span>{t("footer.privacyTagline")}</span>
             </div>
           </div>
 
@@ -31,13 +31,13 @@ export function Footer() {
               href="/privacy"
               className="text-xs text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
             >
-              Privacy Policy
+              {t("common.privacyPolicy")}
             </Link>
             <Link
               href="/terms"
               className="text-xs text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
             >
-              Terms of Service
+              {t("common.termsOfService")}
             </Link>
           </nav>
         </div>

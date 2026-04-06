@@ -10,7 +10,44 @@
     "printResults": "Print Results",
     "loading": "Loading...",
     "submit": "Analyze My Results",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "or": "or",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "trustBar": {
+    "message": "We never store your health data. Not now, not ever."
+  },
+  "footer": {
+    "privacyTagline": "Zero data retention. Your privacy, guaranteed."
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "unexpectedError": "An unexpected error occurred. Please try refreshing the page.",
+    "tryAgain": "Try again"
+  },
+  "hero": {
+    "noAccount": "No account",
+    "noDataStored": "No data stored",
+    "encryptedDiscarded": "Encrypted & discarded"
+  },
+  "fileUpload": {
+    "dragAndDrop": "Drag and drop or click to upload",
+    "unsupportedType": "Unsupported file type. Please upload JPG, PNG, WebP, or PDF.",
+    "fileTooLarge": "File too large. Maximum size is 10MB."
+  },
+  "paymentVerification": {
+    "verifying": "Verifying your payment...",
+    "notVerifiedTitle": "Payment Not Verified",
+    "notVerifiedMessage": "We couldn't verify your payment. If you were charged, please contact support."
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "he": "עברית",
+    "ru": "Русский",
+    "es": "Español",
+    "de": "Deutsch",
+    "fr": "Français"
   },
   "disclaimer": {
     "banner": "This tool is for informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult your healthcare provider.",
@@ -122,6 +159,28 @@
     "currentPlan": "Current Plan",
     "mostPopular": "Most Popular",
     "bestValue": "Best Value"
+  },
+  "auth": {
+    "loginTitle": "Log In to BloodTest AI",
+    "loginSubtitle": "Access your blood test analysis account",
+    "registerTitle": "Create Your Account",
+    "registerSubtitle": "Sign up to start analyzing your blood tests",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "loginButton": "Log In",
+    "registerButton": "Sign Up",
+    "googleLogin": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "emailConfirmationSent": "Check Your Email",
+    "checkEmailMessage": "We sent you a confirmation link. Please check your inbox to verify your account.",
+    "passwordMismatch": "Passwords do not match.",
+    "invalidCredentials": "Invalid email or password.",
+    "logout": "Log Out"
   },
   "payment": {
     "successTitle": "Payment Successful!",

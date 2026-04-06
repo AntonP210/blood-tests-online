@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkoutRequestSchema } from "@/lib/validators";
-import { getOrCreateSessionId } from "@/lib/usage-tracker";
+import { getAuthenticatedUserId } from "@/lib/usage-tracker";
 import { createCheckoutSession } from "@/lib/lemonsqueezy";
 
 export async function POST(request: Request) {
@@ -14,11 +14,21 @@ export async function POST(request: Request) {
       );
     }
 
+    let userId: string;
+    try {
+      userId = await getAuthenticatedUserId();
+    } catch {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { tier } = checkoutRequestSchema.parse(body);
+    const locale = body.locale || "en";
 
-    const sessionId = await getOrCreateSessionId();
-    const url = await createCheckoutSession(tier, sessionId, appUrl);
+    const url = await createCheckoutSession(tier, userId, appUrl, locale);
 
     if (!url) {
       return NextResponse.json(

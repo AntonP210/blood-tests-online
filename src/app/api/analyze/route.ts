@@ -4,23 +4,29 @@ import { analyzeRequestSchema } from "@/lib/validators";
 import { analyzeBloodTest } from "@/lib/gemini";
 import { checkRateLimit } from "@/lib/rate-limit";
 import {
-  getOrCreateSessionId,
+  getAuthenticatedUserId,
   tryConsumeUsage,
   checkPaymentStatus,
 } from "@/lib/usage-tracker";
 
 export async function POST(request: Request) {
   try {
-    // Rate limiting by IP (paid users get higher limits)
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      "unknown";
+    // Require authentication
+    let userId: string;
+    try {
+      userId = await getAuthenticatedUserId();
+    } catch {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
 
-    const sessionId = await getOrCreateSessionId();
-    const payment = await checkPaymentStatus(sessionId);
+    // Rate limiting (paid users get higher limits)
+    const payment = await checkPaymentStatus(userId);
     const isPaid = payment.isPaid || payment.subscriptionStatus === "active";
 
-    const rateLimitResult = await checkRateLimit(ip, isPaid);
+    const rateLimitResult = await checkRateLimit(userId, isPaid);
     if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
@@ -29,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     // Atomically check and consume usage
-    const access = await tryConsumeUsage(sessionId);
+    const access = await tryConsumeUsage(userId);
     if (!access.allowed) {
       return NextResponse.json({ error: access.reason }, { status: 402 });
     }
@@ -87,7 +93,6 @@ export async function POST(request: Request) {
     const message =
       error instanceof Error ? error.message : "An unexpected error occurred";
 
-    // Don't leak internal details for unknown errors
     const isKnownError =
       error instanceof Error &&
       (message.includes("Gemini") ||

@@ -27,7 +27,7 @@ export function HowItWorks() {
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/25 sm:h-16 sm:w-16">
                   <step.icon className="h-6 w-6 sm:h-7 sm:w-7" />
                 </div>
-                <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground sm:h-7 sm:w-7">
+                <span className="absolute -top-2 -end-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground sm:h-7 sm:w-7">
                   {index + 1}
                 </span>
               </div>
@@ -39,7 +39,7 @@ export function HowItWorks() {
 
               {/* Connector arrow (hidden on last item and mobile) */}
               {index < steps.length - 1 && (
-                <div className="pointer-events-none absolute top-8 right-0 hidden translate-x-1/2 text-border sm:block">
+                <div className="pointer-events-none absolute top-8 end-0 hidden translate-x-1/2 text-border rtl:-scale-x-100 sm:block">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
