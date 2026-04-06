@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BloodTest AI
 
-## Getting Started
+Privacy-first blood test interpretation powered by AI. Users upload or enter blood test results and receive personalized explanations based on their age and gender. No data is stored.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Node.js](https://nodejs.org/) v20+
+- A [Gemini API key](https://aistudio.google.com/apikey)
+- A [Stripe account](https://dashboard.stripe.com/register) (for payments)
+- An [Upstash Redis](https://upstash.com/) instance (for rate limiting and usage tracking, free tier works)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Create your environment file:**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Fill in `.env.local` with your keys:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   | Variable | Where to get it |
+   |----------|----------------|
+   | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) |
+   | `STRIPE_SECRET_KEY` | Stripe Dashboard > Developers > API keys |
+   | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Same as above (publishable key) |
+   | `STRIPE_WEBHOOK_SECRET` | Stripe Dashboard > Developers > Webhooks (or Stripe CLI) |
+   | `STRIPE_PRICE_ONE_TIME` | Create a product in Stripe, copy the price ID |
+   | `STRIPE_PRICE_WEEKLY` | Same — create a recurring weekly price |
+   | `STRIPE_PRICE_MONTHLY` | Same — create a recurring monthly price |
+   | `STRIPE_PRICE_YEARLY` | Same — create a recurring yearly price |
+   | `UPSTASH_REDIS_REST_URL` | [Upstash Console](https://console.upstash.com/) > your database > REST API |
+   | `UPSTASH_REDIS_REST_TOKEN` | Same as above |
+   | `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` for dev, your domain for prod |
+   | `FREE_ANALYSIS_LIMIT` | Number of free analyses (default: `2`) |
 
-## Deploy on Vercel
+4. **Run the dev server:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Stripe Setup
+
+1. Go to [Stripe Dashboard > Products](https://dashboard.stripe.com/products) and create the following:
+   - **One-Time Analysis** — one-time price (e.g. $2)
+   - **Weekly Plan** — recurring weekly price (e.g. $3/week)
+   - **Monthly Plan** — recurring monthly price (e.g. $9/month)
+   - **Yearly Plan** — recurring yearly price (e.g. $59/year)
+
+2. Copy each price ID (`price_...`) into your `.env.local`.
+
+3. For local webhook testing, install the [Stripe CLI](https://stripe.com/docs/stripe-cli) and run:
+
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhooks/stripe
+   ```
+
+   Copy the webhook signing secret it prints into `STRIPE_WEBHOOK_SECRET`.
+
+## Deploy to Vercel
+
+1. Push the repo to GitHub.
+2. Import the project in [Vercel](https://vercel.com/new).
+3. Add all environment variables from `.env.local` in Vercel's project settings.
+4. Update `NEXT_PUBLIC_APP_URL` to your production domain.
+5. Add a webhook endpoint in Stripe Dashboard pointing to `https://yourdomain.com/api/webhooks/stripe`.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
