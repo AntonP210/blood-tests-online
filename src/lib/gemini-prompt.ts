@@ -90,6 +90,14 @@ export function buildFilePrompt(
 
   return `Analyze the blood test results shown in this ${docType} for a ${safeAge}-year-old ${safeGender} patient.
 
-Extract all visible markers and their values, then provide a comprehensive analysis in the following JSON format:
+CRITICAL INSTRUCTIONS FOR VALUE EXTRACTION:
+- Read each marker's numeric value EXACTLY as printed. Do not round, estimate, or default to zero.
+- If a value is shown on a scale or graph, read the actual number displayed, not the scale endpoints.
+- If the ${docType} contains both a numeric value and a visual scale, always use the numeric value.
+- If you cannot clearly read a value, still attempt your best reading rather than defaulting to 0.
+- Pay close attention to decimal points, commas, and unit labels next to each value.
+- Cross-check: if the reference range and the value use the same unit, make sure both are captured correctly.
+
+Extract ALL visible markers and their values, then provide a comprehensive analysis in the following JSON format:
 ${JSON_SCHEMA}`;
 }
