@@ -6,8 +6,8 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Privacy Policy</h1>
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+      <h1 className="text-2xl font-bold tracking-tight mb-6 sm:text-3xl sm:mb-8">Privacy Policy</h1>
 
       <div className="prose prose-sm max-w-none space-y-6 text-muted-foreground">
         <section>
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
               .
             </li>
             <li>
-              <strong>Stripe:</strong> Used for payment processing.
+              <strong>LemonSqueezy:</strong> Used for payment processing.
             </li>
             <li>
               <strong>Vercel:</strong> Used for hosting the application.

@@ -49,23 +49,23 @@ export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
           : "relative"
       }
     >
-      <CardHeader className="text-center p-6">
+      <CardHeader className="text-center p-4 sm:p-6">
         {tier.badge && (
-          <Badge className="mx-auto mb-2 w-fit">{tier.badge}</Badge>
+          <Badge className="mx-auto mb-2 w-fit text-xs">{tier.badge}</Badge>
         )}
-        <CardTitle className="text-xl">{tier.name}</CardTitle>
-        <CardDescription>{tier.description}</CardDescription>
-        <div className="mt-3">
-          <span className="text-4xl font-bold">{tier.price}</span>
+        <CardTitle className="text-lg sm:text-xl">{tier.name}</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">{tier.description}</CardDescription>
+        <div className="mt-2 sm:mt-3">
+          <span className="text-2xl font-bold sm:text-4xl">{tier.price}</span>
           {tier.period && (
             <span className="text-muted-foreground">{tier.period}</span>
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-5 p-6 pt-0">
-        <ul className="space-y-3">
+      <CardContent className="space-y-4 p-4 pt-0 sm:space-y-5 sm:p-6 sm:pt-0">
+        <ul className="space-y-2 sm:space-y-3">
           {tier.features.map((feature) => (
-            <li key={feature} className="flex items-center gap-2.5 text-sm">
+            <li key={feature} className="flex items-center gap-2 text-xs sm:gap-2.5 sm:text-sm">
               <Check className="h-4 w-4 text-primary shrink-0" />
               {feature}
             </li>

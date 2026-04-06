@@ -39,20 +39,20 @@ export function PricingPreview() {
   ];
 
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-4xl">
           {t("title")}
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-muted-foreground sm:mt-4 sm:text-lg">
           {t("subtitle")}
         </p>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-3 lg:mx-auto lg:max-w-4xl">
+        <div className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-3 sm:gap-6 lg:mx-auto lg:max-w-4xl">
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`relative rounded-2xl border p-6 transition-shadow hover:shadow-lg ${
+              className={`relative rounded-xl border p-5 transition-shadow hover:shadow-lg sm:rounded-2xl sm:p-6 ${
                 tier.popular
                   ? "border-primary bg-primary/5 shadow-md ring-1 ring-primary/20"
                   : "border-border bg-card"
@@ -70,19 +70,19 @@ export function PricingPreview() {
               )}
 
               <div className="text-center">
-                <h3 className="text-lg font-bold">{tier.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h3 className="text-base font-bold sm:text-lg">{tier.name}</h3>
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   {tier.price}
                 </p>
               </div>
 
-              <ul className="mt-6 space-y-3">
+              <ul className="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
                 {tier.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-center gap-2.5 text-sm"
+                    className="flex items-center gap-2 text-xs sm:gap-2.5 sm:text-sm"
                   >
-                    <Check className="h-4 w-4 shrink-0 text-primary" />
+                    <Check className="h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
                     {feature}
                   </li>
                 ))}
@@ -91,12 +91,12 @@ export function PricingPreview() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-8 text-center sm:mt-10">
           <Button
             render={<Link href="/pricing" />}
             variant="outline"
             size="lg"
-            className="gap-2 rounded-full px-8"
+            className="w-full gap-2 rounded-full px-8 sm:w-auto"
           >
             {tc("viewPricing")}
             <ArrowRight className="h-4 w-4" />

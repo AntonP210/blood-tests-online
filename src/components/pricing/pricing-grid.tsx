@@ -8,7 +8,7 @@ export function PricingGrid() {
   const t = useTranslations("pricing");
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 sm:gap-5">
       {PRICING_TIERS.map((tier) => (
         <PricingCard
           key={tier.id}

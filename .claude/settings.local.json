@@ -4,7 +4,13 @@
       "WebSearch",
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
       "Bash(npm install:*)",
-      "Bash(npx shadcn@latest init -d)"
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx shadcn@latest add card input label tabs select textarea badge alert separator skeleton)",
+      "Bash(npx next:*)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(grep -E \"\\\\.\\(ts|tsx|json\\)$\")",
+      "Bash(npm uninstall:*)",
+      "Bash(npx vercel:*)"
     ]
   }
 }
