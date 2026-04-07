@@ -14,9 +14,11 @@ import {
 const MIN_FILE_DATA_LENGTH = 6_000;
 
 export async function POST(request: Request) {
+  let userId: string | null = null;
+  let usageConsumed = false;
+
   try {
     // Require authentication
-    let userId: string;
     try {
       userId = await getAuthenticatedUserId();
     } catch {
@@ -66,7 +68,6 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      // Reject trivially small files (likely not a real blood test)
       if (parsed.fileData.length < MIN_FILE_DATA_LENGTH) {
         return NextResponse.json(
           { error: "File is too small to contain blood test results. Please upload a clear image or PDF." },
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Rate limiting (paid users get higher limits)
+    // Rate limiting
     const payment = await checkPaymentStatus(userId);
     const isPaid = payment.isPaid || payment.subscriptionStatus === "active";
 
@@ -94,11 +95,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Atomically check and consume usage (after validation passes)
+    // Consume usage
     const access = await tryConsumeUsage(userId);
     if (!access.allowed) {
       return NextResponse.json({ error: access.reason }, { status: 402 });
     }
+    usageConsumed = true;
 
     // Call Gemini
     const result = await analyzeBloodTest({
@@ -110,9 +112,10 @@ export async function POST(request: Request) {
       gender: parsed.gender,
     });
 
-    // If Gemini returned 0 markers (e.g. unreadable image), refund and track failure
+    // If Gemini returned 0 markers, refund and track failure
     if (result.markers.length === 0) {
       await refundUsage(userId);
+      usageConsumed = false;
       await trackFailure(userId);
       return NextResponse.json(
         { error: "No blood test markers found in the uploaded file. Please upload a clear image of your blood test results." },
@@ -123,23 +126,26 @@ export async function POST(request: Request) {
     return NextResponse.json(result);
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "An unexpected error occurred";
+      error instanceof Error ? error.message : String(error);
+    const errorName = error instanceof Error ? error.name : "Unknown";
 
     console.error("Analysis error:", {
       message,
-      name: error instanceof Error ? error.name : "Unknown",
+      name: errorName,
       stack: error instanceof Error ? error.stack : undefined,
+      userId,
     });
 
-    // Refund usage since the analysis failed
-    try {
-      const uid = await getAuthenticatedUserId().catch(() => null);
-      if (uid) await refundUsage(uid);
-    } catch {
-      // Best effort refund
+    // Refund usage if it was consumed before the error
+    if (usageConsumed && userId) {
+      try {
+        await refundUsage(userId);
+      } catch (refundErr) {
+        console.error("Refund failed:", refundErr);
+      }
     }
 
-    // Map error messages to user-friendly text
+    // Map to user-friendly message
     let userMessage: string;
     let status = 500;
 
@@ -161,7 +167,8 @@ export async function POST(request: Request) {
       userMessage = message;
       status = 400;
     } else {
-      userMessage = "Something went wrong analyzing your blood test. Please try again.";
+      // Include the actual error for debugging — visible in browser console
+      userMessage = `Analysis failed: ${errorName} — ${message}`;
     }
 
     return NextResponse.json(
