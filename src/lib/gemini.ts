@@ -193,11 +193,11 @@ export async function analyzeBloodTest(
       },
     });
     parts.push({
-      text: buildFilePrompt(input.age, input.gender, input.mimeType),
+      text: buildFilePrompt(input.age, input.gender, input.mimeType, input.locale),
     });
   } else if (input.inputType === "manual" && input.markers) {
     parts.push({
-      text: buildManualPrompt(input.markers, input.age, input.gender),
+      text: buildManualPrompt(input.markers, input.age, input.gender, input.locale),
     });
   } else {
     throw new Error("Invalid input: provide either file data or markers");

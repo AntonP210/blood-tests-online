@@ -112,6 +112,10 @@ export async function POST(request: Request) {
     usageConsumed = true;
 
     // Call Gemini
+    const validLocales = ["en", "he", "ru", "es", "de", "fr"];
+    const rawLocale = (body as Record<string, unknown>)?.locale;
+    const locale = typeof rawLocale === "string" && validLocales.includes(rawLocale) ? rawLocale : "en";
+
     const result = await analyzeBloodTest({
       inputType: parsed.inputType,
       fileData: parsed.fileData,
@@ -119,6 +123,7 @@ export async function POST(request: Request) {
       markers: parsed.markers,
       age: parsed.age,
       gender: parsed.gender,
+      locale,
     });
 
     // If Gemini returned 0 markers, refund and track failure

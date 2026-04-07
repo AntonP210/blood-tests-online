@@ -11,6 +11,7 @@ export interface BloodTestInput {
   markers?: BloodMarker[];
   age: number;
   gender: "male" | "female" | "other";
+  locale?: string;
 }
 
 export interface AnalyzedMarker {

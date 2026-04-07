@@ -58,10 +58,26 @@ function sanitizeGender(value: string): string {
   return VALID_GENDERS.has(lower) ? lower : "other";
 }
 
+const LOCALE_NAMES: Record<string, string> = {
+  en: "English",
+  he: "Hebrew",
+  ru: "Russian",
+  es: "Spanish",
+  de: "German",
+  fr: "French",
+};
+
+function getLanguageInstruction(locale?: string): string {
+  const lang = locale && LOCALE_NAMES[locale] ? LOCALE_NAMES[locale] : "English";
+  if (lang === "English") return "";
+  return `\n\nIMPORTANT: Write ALL text content (summary, explanations, recommendations, disclaimer) in ${lang}. Marker names should remain in English but explanations must be in ${lang}.`;
+}
+
 export function buildManualPrompt(
   markers: BloodMarker[],
   age: number,
-  gender: string
+  gender: string,
+  locale?: string
 ): string {
   const safeAge = sanitizeNumber(age, 1, 120);
   const safeGender = sanitizeGender(gender);
@@ -78,13 +94,14 @@ export function buildManualPrompt(
 ${markerTable}
 
 Provide a comprehensive analysis in the following JSON format:
-${JSON_SCHEMA}`;
+${JSON_SCHEMA}${getLanguageInstruction(locale)}`;
 }
 
 export function buildFilePrompt(
   age: number,
   gender: string,
-  mimeType: string
+  mimeType: string,
+  locale?: string
 ): string {
   const safeAge = sanitizeNumber(age, 1, 120);
   const safeGender = sanitizeGender(gender);
@@ -105,5 +122,5 @@ CRITICAL INSTRUCTIONS:
 - You MUST extract at least the markers you can identify. Do not return an empty markers array.
 
 Extract ALL visible markers and their values, then provide a comprehensive analysis in the following JSON format:
-${JSON_SCHEMA}`;
+${JSON_SCHEMA}${getLanguageInstruction(locale)}`;
 }

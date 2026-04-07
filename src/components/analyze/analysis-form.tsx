@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ export function AnalysisForm() {
   const t = useTranslations("analyze");
   const tc = useTranslations("common");
   const router = useRouter();
+  const locale = useLocale();
 
   const { setResult, setLoading, setError, clear, isLoading, error } =
     useAnalysisStore();
@@ -91,6 +92,7 @@ export function AnalysisForm() {
               mimeType: fileData!.mimeType,
               age: parseInt(age),
               gender,
+              locale,
             }
           : {
               inputType: "manual" as const,
@@ -103,6 +105,7 @@ export function AnalysisForm() {
                 })),
               age: parseInt(age),
               gender,
+              locale,
             };
 
       const response = await fetch("/api/analyze", {
