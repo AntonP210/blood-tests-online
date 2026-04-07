@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { analyzeRequestSchema } from "@/lib/validators";
 import { analyzeBloodTest } from "@/lib/gemini";
-import { checkRateLimit, isAbuser, trackFailure } from "@/lib/rate-limit";
+import { checkRateLimit, isAbuser, trackFailure, getRedis } from "@/lib/rate-limit";
 import {
   getAuthenticatedUserId,
   tryConsumeUsage,
@@ -98,6 +98,15 @@ export async function POST(request: Request) {
     // Consume usage
     const access = await tryConsumeUsage(userId);
     if (!access.allowed) {
+      // Set offer start time if not already set (24h expiry)
+      const redis = getRedis();
+      if (redis) {
+        const key = `offer:${userId}`;
+        const existing = await redis.get(key);
+        if (!existing) {
+          await redis.set(key, Date.now().toString(), { ex: 86400 });
+        }
+      }
       return NextResponse.json({ error: access.reason }, { status: 402 });
     }
     usageConsumed = true;

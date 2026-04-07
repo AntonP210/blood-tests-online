@@ -200,6 +200,18 @@
     "invalidCredentials": "E-mail ou mot de passe invalide.",
     "logout": "Se déconnecter"
   },
+  "usage": {
+    "unlimited": "Analyses illimitées",
+    "analysesRemaining": "{count} sur {total} analyses gratuites restantes",
+    "noAnalysesLeft": "Plus d'analyses gratuites disponibles"
+  },
+  "upgrade": {
+    "title": "Vous avez utilisé toutes vos analyses gratuites",
+    "subtitle": "Passez à un forfait pour continuer à analyser vos résultats avec des explications détaillées.",
+    "choosePlan": "Choisir un forfait",
+    "limitedOffer": "Offre limitée — passez à un forfait et économisez !",
+    "offerExpires": "L'offre expire dans {time}"
+  },
   "payment": {
     "successTitle": "Paiement réussi !",
     "successMessage": "Merci pour votre achat. Vous pouvez maintenant analyser vos analyses de sang.",

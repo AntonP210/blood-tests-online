@@ -200,6 +200,18 @@
     "invalidCredentials": "Ungültige E-Mail oder ungültiges Passwort.",
     "logout": "Abmelden"
   },
+  "usage": {
+    "unlimited": "Unbegrenzte Analysen",
+    "analysesRemaining": "{count} von {total} kostenlosen Analysen übrig",
+    "noAnalysesLeft": "Keine kostenlosen Analysen mehr übrig"
+  },
+  "upgrade": {
+    "title": "Alle kostenlosen Analysen aufgebraucht",
+    "subtitle": "Upgraden Sie, um Ihre Blutwerte weiterhin mit detaillierten Erklärungen zu analysieren.",
+    "choosePlan": "Tarif wählen",
+    "limitedOffer": "Zeitlich begrenztes Angebot — jetzt upgraden und sparen!",
+    "offerExpires": "Angebot läuft ab in {time}"
+  },
   "payment": {
     "successTitle": "Zahlung erfolgreich!",
     "successMessage": "Vielen Dank für Ihren Kauf. Sie können jetzt Ihre Bluttests analysieren.",

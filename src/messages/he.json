@@ -200,6 +200,18 @@
     "invalidCredentials": "אימייל או סיסמה שגויים.",
     "logout": "התנתקו"
   },
+  "usage": {
+    "unlimited": "ניתוחים ללא הגבלה",
+    "analysesRemaining": "{count} מתוך {total} ניתוחים חינמיים נותרו",
+    "noAnalysesLeft": "לא נותרו ניתוחים חינמיים"
+  },
+  "upgrade": {
+    "title": "ניצלתם את כל הניתוחים החינמיים",
+    "subtitle": "שדרגו כדי להמשיך לנתח את בדיקות הדם שלכם עם הסברים מפורטים.",
+    "choosePlan": "בחרו תוכנית",
+    "limitedOffer": "הצעה לזמן מוגבל — שדרגו עכשיו וחסכו!",
+    "offerExpires": "ההצעה פגה בעוד {time}"
+  },
   "payment": {
     "successTitle": "התשלום בוצע בהצלחה!",
     "successMessage": "תודה על הרכישה. כעת תוכלו לנתח את בדיקות הדם שלכם.",

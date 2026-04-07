@@ -11,6 +11,8 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { UserInfoForm } from "./user-info-form";
 import { ManualEntryForm, type MarkerRow } from "./manual-entry-form";
 import { FileUpload } from "./file-upload";
+import { UsageIndicator } from "./usage-indicator";
+import { UpgradeModal } from "./upgrade-modal";
 import { useAnalysisStore } from "@/hooks/use-analysis";
 
 const createEmptyMarkers = (): MarkerRow[] =>
@@ -39,6 +41,7 @@ export function AnalysisForm() {
     name: string;
   } | null>(null);
   const [attempted, setAttempted] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   const getValidationIssues = (): string[] => {
     const issues: string[] = [];
@@ -110,6 +113,14 @@ export function AnalysisForm() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
+
+        // Show upgrade modal on payment required (limit reached)
+        if (response.status === 402) {
+          setLoading(false);
+          setShowUpgrade(true);
+          return;
+        }
+
         throw new Error(
           errorData?.error || `Analysis failed (${response.status})`
         );
@@ -126,77 +137,83 @@ export function AnalysisForm() {
   const issues = attempted ? getValidationIssues() : [];
 
   return (
-    <Card>
-      <CardContent className="space-y-6 pt-6">
-        <UserInfoForm
-          age={age}
-          gender={gender}
-          onAgeChange={setAge}
-          onGenderChange={setGender}
-        />
+    <>
+      <Card>
+        <CardContent className="space-y-6 pt-6">
+          <UsageIndicator />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upload">{t("tabUpload")}</TabsTrigger>
-            <TabsTrigger value="manual">{t("tabManual")}</TabsTrigger>
-          </TabsList>
+          <UserInfoForm
+            age={age}
+            gender={gender}
+            onAgeChange={setAge}
+            onGenderChange={setGender}
+          />
 
-          <TabsContent value="upload" className="mt-4">
-            <FileUpload
-              onFileSelect={setFileData}
-              onFileRemove={() => setFileData(null)}
-              selectedFile={
-                fileData
-                  ? { name: fileData.name, mimeType: fileData.mimeType }
-                  : null
-              }
-            />
-          </TabsContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="upload">{t("tabUpload")}</TabsTrigger>
+              <TabsTrigger value="manual">{t("tabManual")}</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="manual" className="mt-4">
-            <ManualEntryForm
-              markers={markers}
-              onMarkersChange={setMarkers}
-            />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="upload" className="mt-4">
+              <FileUpload
+                onFileSelect={setFileData}
+                onFileRemove={() => setFileData(null)}
+                selectedFile={
+                  fileData
+                    ? { name: fileData.name, mimeType: fileData.mimeType }
+                    : null
+                }
+              />
+            </TabsContent>
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+            <TabsContent value="manual" className="mt-4">
+              <ManualEntryForm
+                markers={markers}
+                onMarkersChange={setMarkers}
+              />
+            </TabsContent>
+          </Tabs>
 
-        {issues.length > 0 && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/30">
-            <p className="mb-1.5 text-sm font-medium text-amber-800 dark:text-amber-200">
-              {t("validationTitle")}
-            </p>
-            <ul className="list-disc space-y-0.5 pl-5 text-xs text-amber-700 dark:text-amber-300">
-              {issues.map((issue) => (
-                <li key={issue}>{issue}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <Button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="w-full gap-2"
-          size="lg"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              {t("analyzing")}
-            </>
-          ) : (
-            tc("submit")
+          {error && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
-        </Button>
-      </CardContent>
-    </Card>
+
+          {issues.length > 0 && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/30">
+              <p className="mb-1.5 text-sm font-medium text-amber-800 dark:text-amber-200">
+                {t("validationTitle")}
+              </p>
+              <ul className="list-disc space-y-0.5 pl-5 text-xs text-amber-700 dark:text-amber-300">
+                {issues.map((issue) => (
+                  <li key={issue}>{issue}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <Button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full gap-2"
+            size="lg"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t("analyzing")}
+              </>
+            ) : (
+              tc("submit")
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+    </>
   );
 }

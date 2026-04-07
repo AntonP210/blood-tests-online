@@ -200,6 +200,18 @@
     "invalidCredentials": "Invalid email or password.",
     "logout": "Log Out"
   },
+  "usage": {
+    "unlimited": "Unlimited analyses",
+    "analysesRemaining": "{count} of {total} free analyses remaining",
+    "noAnalysesLeft": "No free analyses remaining"
+  },
+  "upgrade": {
+    "title": "You've used all your free analyses",
+    "subtitle": "Upgrade to continue analyzing your bloodwork with detailed explanations.",
+    "choosePlan": "Choose Plan",
+    "limitedOffer": "Limited-time offer — upgrade now and save!",
+    "offerExpires": "Offer expires in {time}"
+  },
   "payment": {
     "successTitle": "Payment Successful!",
     "successMessage": "Thank you for your purchase. You can now analyze your blood tests.",

@@ -200,6 +200,18 @@
     "invalidCredentials": "Correo electrónico o contraseña inválidos.",
     "logout": "Cerrar sesión"
   },
+  "usage": {
+    "unlimited": "Análisis ilimitados",
+    "analysesRemaining": "{count} de {total} análisis gratuitos restantes",
+    "noAnalysesLeft": "No quedan análisis gratuitos"
+  },
+  "upgrade": {
+    "title": "Has usado todos tus análisis gratuitos",
+    "subtitle": "Actualiza para seguir analizando tus resultados con explicaciones detalladas.",
+    "choosePlan": "Elegir plan",
+    "limitedOffer": "Oferta por tiempo limitado — actualiza ahora y ahorra!",
+    "offerExpires": "La oferta expira en {time}"
+  },
   "payment": {
     "successTitle": "¡Pago exitoso!",
     "successMessage": "Gracias por tu compra. Ahora puedes analizar tus análisis de sangre.",
