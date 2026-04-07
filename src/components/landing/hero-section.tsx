@@ -51,18 +51,15 @@ export async function HeroSection() {
             </span>
           </div>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
-            <div className="flex flex-col items-center">
-              <Button
-                render={<Link href="/analyze" />}
-                size="lg"
-                className="w-full gap-2 rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/25 sm:w-auto"
-              >
-                {tc("getStarted")}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <span className="mt-1.5 text-xs font-medium text-primary/70">{t("heroFree")}</span>
-            </div>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4">
+            <Button
+              render={<Link href="/analyze" />}
+              size="lg"
+              className="w-full gap-2 rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/25 sm:w-auto"
+            >
+              {tc("getStarted")}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
             <Button
               render={<Link href="/pricing" />}
               variant="outline"
@@ -72,6 +69,7 @@ export async function HeroSection() {
               {tc("viewPricing")}
             </Button>
           </div>
+          <p className="mt-3 text-xs font-medium text-primary/70">{t("heroFree")}</p>
         </div>
       </div>
     </section>

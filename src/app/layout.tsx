@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Bloodwork Online - Understand Your Blood Tests in Minutes",
+    default: "Bloodwork Online - Your Bloodwork, Clearly Explained",
     template: "%s | Bloodwork Online",
   },
   description:

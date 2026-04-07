@@ -122,25 +122,51 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Analysis error:", error);
-
     const message =
       error instanceof Error ? error.message : "An unexpected error occurred";
 
-    const isKnownError =
-      error instanceof Error &&
-      (message.includes("Gemini") ||
-        message.includes("Invalid input") ||
-        message.includes("GEMINI_API_KEY") ||
-        message.includes("timed out"));
+    console.error("Analysis error:", {
+      message,
+      name: error instanceof Error ? error.name : "Unknown",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Refund usage since the analysis failed
+    try {
+      const uid = await getAuthenticatedUserId().catch(() => null);
+      if (uid) await refundUsage(uid);
+    } catch {
+      // Best effort refund
+    }
+
+    // Map error messages to user-friendly text
+    let userMessage: string;
+    let status = 500;
+
+    if (message.includes("timed out")) {
+      userMessage = "The analysis took too long. Please try again.";
+      status = 504;
+    } else if (message.includes("empty response")) {
+      userMessage = "Could not read your blood test. Please upload a clearer image or try manual entry.";
+      status = 422;
+    } else if (message.includes("invalid JSON") || message.includes("failed validation")) {
+      userMessage = "Could not interpret the results. Please try again or use manual entry.";
+      status = 422;
+    } else if (message.includes("API_KEY")) {
+      userMessage = "Service is temporarily unavailable. Please try again later.";
+    } else if (message.includes("quota") || message.includes("429") || message.includes("rate")) {
+      userMessage = "Service is busy. Please try again in a few minutes.";
+      status = 503;
+    } else if (message.includes("Invalid input")) {
+      userMessage = message;
+      status = 400;
+    } else {
+      userMessage = "Something went wrong analyzing your blood test. Please try again.";
+    }
 
     return NextResponse.json(
-      {
-        error: isKnownError
-          ? message
-          : "Failed to analyze blood test. Please try again.",
-      },
-      { status: 500 }
+      { error: userMessage },
+      { status }
     );
   }
 }
