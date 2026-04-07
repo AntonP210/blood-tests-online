@@ -27,6 +27,10 @@ export function LoginForm() {
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) {
+      setError("Authentication service is not configured.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -45,6 +49,10 @@ export function LoginForm() {
   };
 
   const handleGoogleLogin = async () => {
+    if (!supabase) {
+      setError("Authentication service is not configured.");
+      return;
+    }
     setLoading(true);
     setError(null);
 

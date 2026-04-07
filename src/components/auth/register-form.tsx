@@ -27,6 +27,11 @@ export function RegisterForm() {
     e.preventDefault();
     setError(null);
 
+    if (!supabase) {
+      setError("Authentication service is not configured.");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError(t("passwordMismatch"));
       return;
@@ -53,6 +58,10 @@ export function RegisterForm() {
   };
 
   const handleGoogleSignUp = async () => {
+    if (!supabase) {
+      setError("Authentication service is not configured.");
+      return;
+    }
     setLoading(true);
     setError(null);
 

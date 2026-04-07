@@ -20,13 +20,20 @@ function getLocaleFromPath(pathname: string): string {
   return routing.defaultLocale;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 1. Refresh Supabase auth tokens
   const { user, supabaseResponse } = await updateSession(request);
 
   // 2. Check protected routes
   const pathname = request.nextUrl.pathname;
-  if (isProtectedRoute(pathname) && !user) {
+  // In E2E test mode, a special cookie skips auth redirects so protected pages
+  // can be tested with mocked APIs. Only honoured when NEXT_PUBLIC_SUPABASE_URL
+  // points to a non-production host (prevents accidental use in prod).
+  const hasTestBypass =
+    request.cookies.get("e2e_auth_bypass")?.value === "true" &&
+    (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").includes("localhost");
+
+  if (isProtectedRoute(pathname) && !user && !hasTestBypass) {
     const locale = getLocaleFromPath(pathname);
     const loginUrl = new URL(`/${locale}/login`, request.url);
     loginUrl.searchParams.set("redirect", pathname);

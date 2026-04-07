@@ -18,6 +18,8 @@ export function Header() {
   const supabase = createClient();
 
   useEffect(() => {
+    if (!supabase) return;
+
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
 
     const {
@@ -27,9 +29,10 @@ export function Header() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase]);
 
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setUser(null);
     setMenuOpen(false);
