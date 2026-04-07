@@ -123,11 +123,34 @@ async function callModel(
       try {
         rawParsed = JSON.parse(text);
       } catch {
-        throw new Error("Gemini returned invalid JSON. Please try again.");
+        // Some models wrap JSON in markdown code blocks
+        const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        try {
+          rawParsed = JSON.parse(cleaned);
+        } catch {
+          console.error("Gemini returned unparseable response:", text.slice(0, 500));
+          throw new Error("Gemini returned invalid JSON. Please try again.");
+        }
       }
 
-      const result = AnalysisResultSchema.safeParse(rawParsed);
+      // Handle cases where response is nested (e.g. { result: { ... } } or array)
+      let candidate = rawParsed;
+      if (Array.isArray(candidate) && candidate.length === 1) {
+        candidate = candidate[0];
+      }
+      if (
+        candidate &&
+        typeof candidate === "object" &&
+        !("summary" in candidate) &&
+        "result" in candidate
+      ) {
+        candidate = (candidate as Record<string, unknown>).result;
+      }
+
+      const result = AnalysisResultSchema.safeParse(candidate);
       if (!result.success) {
+        console.error("Gemini validation failed:", JSON.stringify(result.error.issues, null, 2));
+        console.error("Raw response shape:", JSON.stringify(candidate, null, 2).slice(0, 1000));
         throw new Error("Gemini response failed validation. Please try again.");
       }
 
