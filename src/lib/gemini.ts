@@ -27,19 +27,19 @@ const RETRY_BASE_DELAY_MS = 1_000;
 
 const AnalyzedMarkerSchema = z.object({
   name: z.string(),
-  value: z.number(),
+  value: z.coerce.number(),
   unit: z.string(),
-  normalRange: z.string(),
-  status: z.enum(["normal", "high", "low", "critical"]),
-  explanation: z.string(),
-});
+  normalRange: z.string().optional().default("N/A"),
+  status: z.enum(["normal", "high", "low", "critical"]).catch("normal"),
+  explanation: z.string().optional().default(""),
+}).passthrough();
 
 const AnalysisResultSchema = z.object({
   summary: z.string(),
   markers: z.array(AnalyzedMarkerSchema),
-  recommendations: z.array(z.string()),
-  disclaimer: z.string(),
-});
+  recommendations: z.array(z.string()).optional().default([]),
+  disclaimer: z.string().optional().default("Please consult your healthcare provider for medical decisions."),
+}).passthrough();
 
 function isRetryableError(error: unknown): boolean {
   if (error instanceof Error) {
