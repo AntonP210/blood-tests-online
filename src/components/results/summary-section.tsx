@@ -9,7 +9,7 @@ export function SummarySection({ summary }: { summary: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("summaryTitle")}</CardTitle>
+        <CardTitle className="text-center">{t("summaryTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground leading-relaxed">{summary}</p>

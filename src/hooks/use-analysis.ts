@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { AnalysisResult } from "@/types/blood-test";
 
 interface AnalysisStore {
@@ -13,12 +14,21 @@ interface AnalysisStore {
   clear: () => void;
 }
 
-export const useAnalysisStore = create<AnalysisStore>((set) => ({
-  result: null,
-  isLoading: false,
-  error: null,
-  setResult: (result) => set({ result, isLoading: false, error: null }),
-  setLoading: (isLoading) => set({ isLoading }),
-  setError: (error) => set({ error, isLoading: false }),
-  clear: () => set({ result: null, isLoading: false, error: null }),
-}));
+export const useAnalysisStore = create<AnalysisStore>()(
+  persist(
+    (set) => ({
+      result: null,
+      isLoading: false,
+      error: null,
+      setResult: (result) => set({ result, isLoading: false, error: null }),
+      setLoading: (isLoading) => set({ isLoading }),
+      setError: (error) => set({ error, isLoading: false }),
+      clear: () => set({ result: null, isLoading: false, error: null }),
+    }),
+    {
+      name: "bloodwork-analysis",
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({ result: state.result }),
+    }
+  )
+);

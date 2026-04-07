@@ -26,7 +26,8 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { tier } = checkoutRequestSchema.parse(body);
-    const locale = body.locale || "en";
+    const validLocales = ["en", "he", "ru", "es", "de", "fr"];
+    const locale = validLocales.includes(body.locale) ? body.locale : "en";
 
     const url = await createCheckoutSession(tier, userId, appUrl, locale);
 

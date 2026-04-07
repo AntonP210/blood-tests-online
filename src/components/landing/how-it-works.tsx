@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Upload, Brain, FileCheck } from "lucide-react";
 
 const steps = [
@@ -9,8 +7,8 @@ const steps = [
   { icon: FileCheck, titleKey: "step3Title", descKey: "step3Description" },
 ] as const;
 
-export function HowItWorks() {
-  const t = useTranslations("landing");
+export async function HowItWorks() {
+  const t = await getTranslations("landing");
 
   return (
     <section className="py-16 sm:py-24 lg:py-32">
@@ -19,30 +17,54 @@ export function HowItWorks() {
           {t("howItWorksTitle")}
         </h2>
 
-        <div className="mt-10 grid gap-8 sm:mt-16 sm:grid-cols-3">
+        {/* Mobile: vertical timeline */}
+        <div className="mt-10 flex flex-col gap-0 sm:hidden">
+          {steps.map((step, index) => (
+            <div key={step.titleKey} className="flex gap-4">
+              {/* Timeline line + number */}
+              <div className="flex flex-col items-center">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  {index + 1}
+                </div>
+                {index < steps.length - 1 && (
+                  <div className="w-px flex-1 bg-border my-1" />
+                )}
+              </div>
+              {/* Content */}
+              <div className="pb-8">
+                <div className="flex items-center gap-2.5">
+                  <step.icon className="h-5 w-5 text-primary" />
+                  <h3 className="text-base font-bold">{t(step.titleKey)}</h3>
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                  {t(step.descKey)}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: horizontal steps */}
+        <div className="mt-16 hidden sm:grid sm:grid-cols-3 sm:gap-8">
           {steps.map((step, index) => (
             <div key={step.titleKey} className="group relative text-center">
-              {/* Step number */}
-              <div className="mx-auto mb-4 relative sm:mb-6">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/25 sm:h-16 sm:w-16">
-                  <step.icon className="h-6 w-6 sm:h-7 sm:w-7" />
-                </div>
-                <span className="absolute -top-2 -end-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground sm:h-7 sm:w-7">
-                  {index + 1}
-                </span>
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/25">
+                <step.icon className="h-7 w-7" />
               </div>
 
-              <h3 className="text-base font-bold sm:text-lg">{t(step.titleKey)}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+              <span className="mb-2 inline-block text-xs font-semibold uppercase tracking-widest text-primary">
+                {t("stepLabel")} {index + 1}
+              </span>
+
+              <h3 className="text-lg font-bold">{t(step.titleKey)}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {t(step.descKey)}
               </p>
 
-              {/* Connector arrow (hidden on last item and mobile) */}
+              {/* Connector line */}
               {index < steps.length - 1 && (
-                <div className="pointer-events-none absolute top-8 end-0 hidden translate-x-1/2 text-border rtl:-scale-x-100 sm:block">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
+                <div className="pointer-events-none absolute top-8 end-0 hidden translate-x-1/2 sm:block">
+                  <div className="h-px w-12 bg-border" />
                 </div>
               )}
             </div>

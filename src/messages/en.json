@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "BloodTest AI",
+    "appName": "Bloodwork Online",
     "tagline": "Understand Your Blood Tests in Minutes",
     "analyze": "Analyze",
     "pricing": "Pricing",
@@ -42,6 +42,7 @@
     "notVerifiedMessage": "We couldn't verify your payment. If you were charged, please contact support."
   },
   "languageSwitcher": {
+    "label": "Select language",
     "en": "English",
     "he": "עברית",
     "ru": "Русский",
@@ -55,10 +56,13 @@
   },
   "landing": {
     "heroTitle": "Your Blood Tests, Explained by AI",
-    "heroSubtitle": "Upload your results, get clear explanations in minutes. <strong>We store absolutely nothing</strong> — your health data never touches our servers.",
+    "heroSubtitleLine1": "Upload your results, get clear explanations in minutes.",
+    "heroSubtitleLine2": "We store absolutely nothing — your health data never touches our servers.",
+    "heroFree": "It's free to start",
     "heroBadge": "Zero data retention — ever",
     "heroPrivacyLine": "No account. No storage. No exceptions.",
     "howItWorksTitle": "Three Steps. That's It.",
+    "stepLabel": "Step",
     "step1Title": "Upload or Enter",
     "step1Description": "Snap a photo of your blood test or type in your values. Both work.",
     "step2Title": "AI Analyzes",
@@ -106,8 +110,16 @@
     "markerUnit": "Unit",
     "addMarker": "Add Another Marker",
     "removeMarker": "Remove",
+    "validationTitle": "Please fix the following to continue:",
+    "validationAge": "Enter your age",
+    "validationAgeRange": "Age must be between 1 and 120",
+    "validationGender": "Select your gender",
+    "validationFile": "Upload a blood test image or PDF",
+    "validationMarkers": "Enter at least one marker with a name and value",
+    "validationIncomplete": "Some markers are missing a name or value",
     "analyzing": "Analyzing your results...",
     "selectMarker": "Select a marker...",
+    "markerNamePlaceholder": "Type or select a marker...",
     "enterValue": "Enter value"
   },
   "results": {
@@ -154,14 +166,20 @@
     "yearlyFeature1": "Unlimited analyses",
     "yearlyFeature2": "Detailed explanations",
     "yearlyFeature3": "365-day access",
+    "lifetime": "Lifetime",
+    "lifetimeDesc": "Pay once, use forever",
+    "lifetimeFeature1": "Unlimited analyses",
+    "lifetimeFeature2": "Detailed explanations",
+    "lifetimeFeature3": "Lifetime access",
     "buyNow": "Buy Now",
     "subscribe": "Subscribe",
     "currentPlan": "Current Plan",
     "mostPopular": "Most Popular",
-    "bestValue": "Best Value"
+    "bestValue": "Best Value",
+    "bestDeal": "Best Deal"
   },
   "auth": {
-    "loginTitle": "Log In to BloodTest AI",
+    "loginTitle": "Log In to Bloodwork Online",
     "loginSubtitle": "Access your blood test analysis account",
     "registerTitle": "Create Your Account",
     "registerSubtitle": "Sign up to start analyzing your blood tests",

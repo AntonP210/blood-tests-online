@@ -3,8 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "BloodTest AI - Understand Your Blood Tests in Minutes",
-    template: "%s | BloodTest AI",
+    default: "Bloodwork Online - Understand Your Blood Tests in Minutes",
+    template: "%s | Bloodwork Online",
   },
   description:
     "Get clear, personalized explanations of your blood test results powered by AI. No account needed. Your data is never stored.",

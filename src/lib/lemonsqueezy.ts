@@ -30,6 +30,24 @@ export function getVariantId(tier: PaymentTier): string {
   return variantId;
 }
 
+const MAX_RETRIES = 2;
+
+async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
+        continue;
+      }
+    }
+  }
+  throw lastError;
+}
+
 export async function createCheckoutSession(
   tier: PaymentTier,
   userId: string,
@@ -45,17 +63,19 @@ export async function createCheckoutSession(
 
   const variantId = getVariantId(tier);
 
-  const checkout = await createCheckout(storeId, variantId, {
-    checkoutData: {
-      custom: {
-        user_id: userId,
-        tier,
+  const checkout = await withRetry(() =>
+    createCheckout(storeId, variantId, {
+      checkoutData: {
+        custom: {
+          user_id: userId,
+          tier,
+        },
       },
-    },
-    productOptions: {
-      redirectUrl: `${redirectUrl}/${locale}/payment/success`,
-    },
-  });
+      productOptions: {
+        redirectUrl: `${redirectUrl}/${locale}/payment/success`,
+      },
+    })
+  );
 
   return checkout.data?.data.attributes.url;
 }
@@ -89,5 +109,13 @@ export async function verifyWebhookSignature(
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
-  return digest === signature;
+  // Use timing-safe comparison to prevent timing attacks
+  if (digest.length !== signature.length) return false;
+  const a = encoder.encode(digest);
+  const b = encoder.encode(signature);
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a[i] ^ b[i];
+  }
+  return result === 0;
 }

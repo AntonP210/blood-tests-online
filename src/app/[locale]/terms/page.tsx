@@ -17,7 +17,7 @@ export default function TermsPage() {
             Acceptance of Terms
           </h2>
           <p>
-            By using BloodTest AI, you agree to these terms. If you do not agree,
+            By using Bloodwork Online, you agree to these terms. If you do not agree,
             please do not use the service.
           </p>
         </section>
@@ -28,7 +28,7 @@ export default function TermsPage() {
           </h2>
           <p>
             <strong>
-              BloodTest AI is NOT a medical service and does NOT provide medical
+              Bloodwork Online is NOT a medical service and does NOT provide medical
               advice, diagnosis, or treatment.
             </strong>{" "}
             The explanations provided are for informational and educational
@@ -47,7 +47,7 @@ export default function TermsPage() {
             Service Description
           </h2>
           <p>
-            BloodTest AI uses AI technology to provide educational explanations
+            Bloodwork Online uses AI technology to provide educational explanations
             of blood test markers. The service processes data you provide (blood
             test values, age, gender) and returns AI-generated interpretations.
           </p>
@@ -70,7 +70,7 @@ export default function TermsPage() {
             Limitation of Liability
           </h2>
           <p>
-            BloodTest AI is provided &quot;as is&quot; without warranties of any
+            Bloodwork Online is provided &quot;as is&quot; without warranties of any
             kind. We are not liable for any damages arising from your use of the
             service, including but not limited to health decisions made based on
             AI-generated explanations.

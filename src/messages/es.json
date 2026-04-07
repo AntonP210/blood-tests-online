@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "BloodTest AI",
+    "appName": "Bloodwork Online",
     "tagline": "Comprende tus análisis de sangre en minutos",
     "analyze": "Analizar",
     "pricing": "Precios",
@@ -42,6 +42,7 @@
     "notVerifiedMessage": "No pudimos verificar tu pago. Si se te cobró, contacta con soporte."
   },
   "languageSwitcher": {
+    "label": "Seleccionar idioma",
     "en": "English",
     "he": "עברית",
     "ru": "Русский",
@@ -55,10 +56,13 @@
   },
   "landing": {
     "heroTitle": "Tus análisis de sangre, explicados por IA",
-    "heroSubtitle": "Sube tus resultados, recibe explicaciones claras en minutos. <strong>No almacenamos absolutamente nada</strong> — tus datos de salud nunca llegan a nuestros servidores.",
+    "heroSubtitleLine1": "Sube tus resultados, recibe explicaciones claras en minutos.",
+    "heroSubtitleLine2": "No almacenamos absolutamente nada — tus datos de salud nunca llegan a nuestros servidores.",
+    "heroFree": "Empieza gratis",
     "heroBadge": "Cero retención de datos — nunca",
     "heroPrivacyLine": "Sin cuenta. Sin almacenamiento. Sin excepciones.",
     "howItWorksTitle": "Tres pasos. Eso es todo.",
+    "stepLabel": "Paso",
     "step1Title": "Sube o ingresa",
     "step1Description": "Toma una foto de tu análisis de sangre o escribe los valores. Ambas formas funcionan.",
     "step2Title": "La IA analiza",
@@ -106,8 +110,16 @@
     "markerUnit": "Unidad",
     "addMarker": "Agregar otro marcador",
     "removeMarker": "Eliminar",
+    "validationTitle": "Por favor, corrige lo siguiente para continuar:",
+    "validationAge": "Ingresa tu edad",
+    "validationAgeRange": "La edad debe estar entre 1 y 120",
+    "validationGender": "Selecciona tu género",
+    "validationFile": "Sube una imagen o PDF de tu análisis de sangre",
+    "validationMarkers": "Ingresa al menos un marcador con nombre y valor",
+    "validationIncomplete": "Algunos marcadores no tienen nombre o valor",
     "analyzing": "Analizando tus resultados...",
     "selectMarker": "Selecciona un marcador...",
+    "markerNamePlaceholder": "Escribe o selecciona un marcador...",
     "enterValue": "Ingresa el valor"
   },
   "results": {
@@ -154,14 +166,20 @@
     "yearlyFeature1": "Análisis ilimitados",
     "yearlyFeature2": "Explicaciones detalladas",
     "yearlyFeature3": "Acceso por 365 días",
+    "lifetime": "De por vida",
+    "lifetimeDesc": "Paga una vez, usa para siempre",
+    "lifetimeFeature1": "Análisis ilimitados",
+    "lifetimeFeature2": "Explicaciones detalladas",
+    "lifetimeFeature3": "Acceso de por vida",
     "buyNow": "Comprar ahora",
     "subscribe": "Suscribirse",
     "currentPlan": "Plan actual",
     "mostPopular": "El más popular",
-    "bestValue": "Mejor valor"
+    "bestValue": "Mejor valor",
+    "bestDeal": "Mejor oferta"
   },
   "auth": {
-    "loginTitle": "Iniciar sesión en BloodTest AI",
+    "loginTitle": "Iniciar sesión en Bloodwork Online",
     "loginSubtitle": "Accede a tu cuenta de análisis de sangre",
     "registerTitle": "Crea tu cuenta",
     "registerSubtitle": "Regístrate para empezar a analizar tus análisis de sangre",

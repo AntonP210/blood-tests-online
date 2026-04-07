@@ -38,17 +38,42 @@ export function AnalysisForm() {
     mimeType: string;
     name: string;
   } | null>(null);
+  const [attempted, setAttempted] = useState(false);
 
-  const canSubmit = () => {
-    if (!age || !gender) return false;
-    if (activeTab === "upload") return fileData !== null;
-    if (activeTab === "manual") {
-      return markers.some((m) => m.name && m.value);
+  const getValidationIssues = (): string[] => {
+    const issues: string[] = [];
+    if (!age) {
+      issues.push(t("validationAge"));
+    } else {
+      const ageNum = parseInt(age);
+      if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+        issues.push(t("validationAgeRange"));
+      }
     }
-    return false;
+    if (!gender) issues.push(t("validationGender"));
+    if (activeTab === "upload" && !fileData) {
+      issues.push(t("validationFile"));
+    }
+    if (activeTab === "manual") {
+      const filledMarkers = markers.filter((m) => m.name && m.value);
+      if (filledMarkers.length === 0) {
+        issues.push(t("validationMarkers"));
+      } else {
+        const incomplete = markers.filter(
+          (m) => (m.name && !m.value) || (!m.name && m.value)
+        );
+        if (incomplete.length > 0) {
+          issues.push(t("validationIncomplete"));
+        }
+      }
+    }
+    return issues;
   };
 
+  const canSubmit = () => getValidationIssues().length === 0;
+
   const handleSubmit = async () => {
+    setAttempted(true);
     if (!canSubmit()) return;
 
     clear();
@@ -98,6 +123,8 @@ export function AnalysisForm() {
     }
   };
 
+  const issues = attempted ? getValidationIssues() : [];
+
   return (
     <Card>
       <CardContent className="space-y-6 pt-6">
@@ -141,9 +168,22 @@ export function AnalysisForm() {
           </Alert>
         )}
 
+        {issues.length > 0 && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/30">
+            <p className="mb-1.5 text-sm font-medium text-amber-800 dark:text-amber-200">
+              {t("validationTitle")}
+            </p>
+            <ul className="list-disc space-y-0.5 pl-5 text-xs text-amber-700 dark:text-amber-300">
+              {issues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <Button
           onClick={handleSubmit}
-          disabled={!canSubmit() || isLoading}
+          disabled={isLoading}
           className="w-full gap-2"
           size="lg"
         >

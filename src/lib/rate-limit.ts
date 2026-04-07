@@ -63,4 +63,26 @@ export async function checkRateLimit(
   return { success: result.success, remaining: result.remaining };
 }
 
+/**
+ * Track failed analysis attempts. After too many failures, block the user
+ * temporarily to prevent abuse (junk images wasting Gemini API calls).
+ * Allows 5 failures per 15 minutes before blocking.
+ */
+export async function trackFailure(userId: string): Promise<void> {
+  const r = getRedis();
+  if (!r) return;
+  const key = `failures:${userId}`;
+  const count = await r.incr(key);
+  if (count === 1) {
+    await r.expire(key, 900); // 15 min window
+  }
+}
+
+export async function isAbuser(userId: string): Promise<boolean> {
+  const r = getRedis();
+  if (!r) return false;
+  const count = await r.get<number>(`failures:${userId}`);
+  return count !== null && count >= 5;
+}
+
 export { getRedis };

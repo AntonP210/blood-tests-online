@@ -53,11 +53,11 @@ export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
       }
     >
       <CardHeader className="text-center p-4 sm:p-6">
-        {tier.badge && (
-          <Badge className="mx-auto mb-2 w-fit text-xs">{tier.badge}</Badge>
+        {tier.badgeKey && (
+          <Badge className="mx-auto mb-2 w-fit text-xs">{t(tier.badgeKey)}</Badge>
         )}
-        <CardTitle className="text-lg sm:text-xl">{tier.name}</CardTitle>
-        <CardDescription className="text-xs sm:text-sm">{tier.description}</CardDescription>
+        <CardTitle className="text-lg sm:text-xl">{t(tier.nameKey)}</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">{t(tier.descriptionKey)}</CardDescription>
         <div className="mt-2 sm:mt-3">
           <span className="text-2xl font-bold sm:text-4xl">{tier.price}</span>
           {tier.period && (
@@ -67,10 +67,10 @@ export function PricingCard({ tier, buttonLabel }: PricingCardProps) {
       </CardHeader>
       <CardContent className="space-y-4 p-4 pt-0 sm:space-y-5 sm:p-6 sm:pt-0">
         <ul className="space-y-2 sm:space-y-3">
-          {tier.features.map((feature) => (
-            <li key={feature} className="flex items-center gap-2 text-xs sm:gap-2.5 sm:text-sm">
+          {tier.featureKeys.map((featureKey) => (
+            <li key={featureKey} className="flex items-center gap-2 text-xs sm:gap-2.5 sm:text-sm">
               <Check className="h-4 w-4 text-primary shrink-0" />
-              {feature}
+              {t(featureKey)}
             </li>
           ))}
         </ul>

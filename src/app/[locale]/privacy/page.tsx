@@ -13,20 +13,30 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">Overview</h2>
           <p>
-            BloodTest AI is designed with your privacy as a top priority. We do
-            not require user accounts, and we do not store your blood test data
-            on our servers. This policy explains how we handle your information.
+            Bloodwork Online is designed with your privacy as a top priority. While
+            we require an account for authentication and usage tracking, we do
+            not store your blood test data on our servers. This policy explains
+            how we handle your information.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-foreground">
+            Data We Collect
+          </h2>
+          <ul className="list-disc pl-6 space-y-1">
+            <li>
+              <strong>Account information:</strong> Your email address and
+              authentication data are stored securely via Supabase to manage
+              your account, usage limits, and payment status.
+            </li>
+          </ul>
+          <h2 className="text-xl font-semibold text-foreground mt-4">
             Data We Do Not Collect
           </h2>
           <ul className="list-disc pl-6 space-y-1">
             <li>We do not store your blood test results</li>
             <li>We do not store uploaded images or PDFs</li>
-            <li>We do not create user profiles or accounts</li>
             <li>We do not track your health information over time</li>
           </ul>
         </section>
@@ -45,12 +55,15 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">Cookies</h2>
+          <h2 className="text-xl font-semibold text-foreground">
+            Authentication &amp; Cookies
+          </h2>
           <p>
-            We use a single functional cookie to track your free analysis usage
-            and payment status. This cookie contains a random identifier and does
-            not contain any personal or health information. It is strictly
-            necessary for the service to function.
+            We use secure authentication cookies managed by Supabase to maintain
+            your session. We also use functional cookies to track your free
+            analysis usage and payment status. These cookies do not contain any
+            health information and are strictly necessary for the service to
+            function.
           </p>
         </section>
 

@@ -60,7 +60,15 @@ export async function POST(request: Request) {
   }
 
   const redis = getRedis();
-  const event: WebhookEvent = JSON.parse(rawBody);
+  let event: WebhookEvent;
+  try {
+    event = JSON.parse(rawBody);
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON body" },
+      { status: 400 }
+    );
+  }
   const eventName = event.meta.event_name;
   const eventId = `${eventName}:${event.data.id}`;
 
@@ -90,15 +98,15 @@ export async function POST(request: Request) {
         if (!tier) break;
 
         if (tier === "lifetime") {
-          // Write to Postgres
-          await supabase.from("payments").insert({
+          // Upsert to Postgres (idempotent on webhook retry)
+          await supabase.from("payments").upsert({
             user_id: userId,
             tier: "lifetime",
             lemonsqueezy_order_id: String(event.data.id),
             status: "active",
             credits_remaining: 0,
             expires_at: null,
-          });
+          }, { onConflict: "lemonsqueezy_order_id" });
           // Cache in Redis
           if (redis) {
             await redis.set(`subscription:${userId}`, "active", {
@@ -106,13 +114,13 @@ export async function POST(request: Request) {
             });
           }
         } else if (tier === "one_time") {
-          await supabase.from("payments").insert({
+          await supabase.from("payments").upsert({
             user_id: userId,
             tier: "one_time",
             lemonsqueezy_order_id: String(event.data.id),
             status: "active",
             credits_remaining: 1,
-          });
+          }, { onConflict: "lemonsqueezy_order_id" });
           if (redis) {
             await redis.set(`credits:${userId}`, 1, {
               ex: 60 * 60 * 24 * 30,
@@ -170,8 +178,7 @@ export async function POST(request: Request) {
 
       case "subscription_cancelled":
       case "subscription_expired": {
-        const supabaseClient = getServiceClient();
-        await supabaseClient
+        await supabase
           .from("payments")
           .update({ status: "cancelled", updated_at: new Date().toISOString() })
           .eq("user_id", userId);

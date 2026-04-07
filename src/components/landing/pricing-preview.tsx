@@ -1,14 +1,12 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, ArrowRight } from "lucide-react";
 
-export function PricingPreview() {
-  const t = useTranslations("pricing");
-  const tc = useTranslations("common");
+export async function PricingPreview() {
+  const t = await getTranslations("pricing");
+  const tc = await getTranslations("common");
 
   const tiers = [
     {

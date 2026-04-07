@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { UserX, DatabaseZap, Lock, ShieldCheck } from "lucide-react";
 
 const features = [
@@ -21,8 +19,8 @@ const features = [
   },
 ] as const;
 
-export function PrivacySection() {
-  const t = useTranslations("landing");
+export async function PrivacySection() {
+  const t = await getTranslations("landing");
 
   return (
     <section className="relative overflow-hidden bg-foreground py-16 sm:py-24 lg:py-32">

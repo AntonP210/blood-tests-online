@@ -1,14 +1,12 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShieldCheck, EyeOff, DatabaseZap } from "lucide-react";
 
-export function HeroSection() {
-  const t = useTranslations("landing");
-  const tc = useTranslations("common");
-  const th = useTranslations("hero");
+export async function HeroSection() {
+  const t = await getTranslations("landing");
+  const tc = await getTranslations("common");
+  const th = await getTranslations("hero");
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/30 py-16 sm:py-24 lg:py-36">
@@ -29,11 +27,10 @@ export function HeroSection() {
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:text-xl">
-            {t.rich("heroSubtitle", {
-              strong: (chunks) => (
-                <strong className="font-bold text-foreground">{chunks}</strong>
-              ),
-            })}
+            {t("heroSubtitleLine1")}
+          </p>
+          <p className="mx-auto mt-3 text-base font-bold text-foreground sm:text-lg lg:text-xl">
+            {t("heroSubtitleLine2")}
           </p>
 
           {/* Privacy trust indicators - inline */}
@@ -55,14 +52,17 @@ export function HeroSection() {
           </div>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
-            <Button
-              render={<Link href="/analyze" />}
-              size="lg"
-              className="w-full gap-2 rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/25 sm:w-auto"
-            >
-              {tc("getStarted")}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+            <div className="flex flex-col items-center">
+              <Button
+                render={<Link href="/analyze" />}
+                size="lg"
+                className="w-full gap-2 rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/25 sm:w-auto"
+              >
+                {tc("getStarted")}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <span className="mt-1.5 text-xs font-medium text-primary/70">{t("heroFree")}</span>
+            </div>
             <Button
               render={<Link href="/pricing" />}
               variant="outline"

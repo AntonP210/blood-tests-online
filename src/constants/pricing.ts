@@ -1,11 +1,11 @@
 export interface PricingTier {
   id: string;
-  name: string;
-  description: string;
+  nameKey: string;
+  descriptionKey: string;
   price: string;
   period?: string;
-  features: string[];
-  badge?: string;
+  featureKeys: string[];
+  badgeKey?: string;
   popular?: boolean;
   paymentMode: "payment" | "subscription";
 }
@@ -13,77 +13,57 @@ export interface PricingTier {
 export const PRICING_TIERS: PricingTier[] = [
   {
     id: "free",
-    name: "Free",
-    description: "Try it out",
+    nameKey: "free",
+    descriptionKey: "freeDesc",
     price: "$0",
-    features: ["2 free analyses", "Basic explanations", "No account needed"],
+    featureKeys: ["freeFeature1", "freeFeature2", "freeFeature3"],
     paymentMode: "payment",
   },
   {
     id: "one_time",
-    name: "One-Time",
-    description: "Pay per analysis",
+    nameKey: "oneTime",
+    descriptionKey: "oneTimeDesc",
     price: "$2.99",
-    features: [
-      "Single analysis",
-      "Detailed explanations",
-      "Instant results",
-    ],
+    featureKeys: ["oneTimeFeature1", "oneTimeFeature2", "oneTimeFeature3"],
     paymentMode: "payment",
   },
   {
     id: "weekly",
-    name: "Weekly",
-    description: "Short-term access",
+    nameKey: "weekly",
+    descriptionKey: "weeklyDesc",
     price: "$4.99",
     period: "/week",
-    features: [
-      "Unlimited analyses",
-      "Detailed explanations",
-      "7-day access",
-    ],
+    featureKeys: ["weeklyFeature1", "weeklyFeature2", "weeklyFeature3"],
     paymentMode: "subscription",
   },
   {
     id: "monthly",
-    name: "Monthly",
-    description: "Most popular",
+    nameKey: "monthly",
+    descriptionKey: "monthlyDesc",
     price: "$9.99",
     period: "/month",
-    features: [
-      "Unlimited analyses",
-      "Detailed explanations",
-      "30-day access",
-    ],
-    badge: "Most Popular",
+    featureKeys: ["monthlyFeature1", "monthlyFeature2", "monthlyFeature3"],
+    badgeKey: "mostPopular",
     popular: true,
     paymentMode: "subscription",
   },
   {
     id: "yearly",
-    name: "Yearly",
-    description: "Best value",
+    nameKey: "yearly",
+    descriptionKey: "yearlyDesc",
     price: "$59.99",
     period: "/year",
-    features: [
-      "Unlimited analyses",
-      "Detailed explanations",
-      "365-day access",
-    ],
-    badge: "Best Value",
+    featureKeys: ["yearlyFeature1", "yearlyFeature2", "yearlyFeature3"],
+    badgeKey: "bestValue",
     paymentMode: "subscription",
   },
   {
     id: "lifetime",
-    name: "Lifetime",
-    description: "Pay once, use forever",
+    nameKey: "lifetime",
+    descriptionKey: "lifetimeDesc",
     price: "$99.99",
-    features: [
-      "Unlimited analyses",
-      "Detailed explanations",
-      "Lifetime access",
-    ],
-    badge: "Best Deal",
+    featureKeys: ["lifetimeFeature1", "lifetimeFeature2", "lifetimeFeature3"],
+    badgeKey: "bestDeal",
     paymentMode: "payment",
   },
 ];

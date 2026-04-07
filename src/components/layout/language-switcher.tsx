@@ -21,6 +21,7 @@ export function LanguageSwitcher() {
       <select
         value={locale}
         onChange={onChange}
+        aria-label={t("label")}
         className="appearance-none bg-transparent text-xs font-medium text-muted-foreground outline-none cursor-pointer hover:text-foreground sm:text-sm"
       >
         {routing.locales.map((loc) => (

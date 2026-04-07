@@ -36,7 +36,7 @@ export function ResultsDisplay() {
       <SummarySection summary={result.summary} />
 
       <div>
-        <h2 className="mb-4 text-xl font-semibold">{t("markersTitle")}</h2>
+        <h2 className="mb-4 text-center text-xl font-semibold">{t("markersTitle")}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {result.markers.map((marker, index) => (
             <MarkerCard key={index} marker={marker} />

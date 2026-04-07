@@ -13,6 +13,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 
 export function LoginForm() {
   const t = useTranslations("auth");
+  const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/analyze";
@@ -110,7 +111,7 @@ export function LoginForm() {
           <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">or</span>
+          <span className="bg-background px-2 text-muted-foreground">{tc("or")}</span>
         </div>
       </div>
 

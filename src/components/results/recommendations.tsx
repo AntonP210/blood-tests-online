@@ -16,7 +16,7 @@ export function Recommendations({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("recommendationsTitle")}</CardTitle>
+        <CardTitle className="text-center">{t("recommendationsTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-3">

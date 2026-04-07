@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains",
           },
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co https://*.upstash.io https://generativelanguage.googleapis.com https://api.lemonsqueezy.com; frame-src 'self' https://*.lemonsqueezy.com; object-src 'none'; base-uri 'self'",
+          },
         ],
       },
     ];

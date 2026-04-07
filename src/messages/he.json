@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "BloodTest AI",
+    "appName": "Bloodwork Online",
     "tagline": "הבינו את בדיקות הדם שלכם תוך דקות",
     "analyze": "ניתוח",
     "pricing": "מחירים",
@@ -42,6 +42,7 @@
     "notVerifiedMessage": "לא הצלחנו לאמת את התשלום שלכם. אם חויבתם, אנא פנו לתמיכה."
   },
   "languageSwitcher": {
+    "label": "בחר שפה",
     "en": "English",
     "he": "עברית",
     "ru": "Русский",
@@ -55,10 +56,13 @@
   },
   "landing": {
     "heroTitle": "בדיקות הדם שלכם, מוסברות על ידי AI",
-    "heroSubtitle": "העלו את התוצאות שלכם, קבלו הסברים ברורים תוך דקות. <strong>אנחנו לא שומרים שום דבר</strong> — המידע הרפואי שלכם לעולם לא מגיע לשרתים שלנו.",
+    "heroSubtitleLine1": "העלו את התוצאות שלכם, קבלו הסברים ברורים תוך דקות.",
+    "heroSubtitleLine2": "אנחנו לא שומרים שום דבר — המידע הרפואי שלכם לעולם לא מגיע לשרתים שלנו.",
+    "heroFree": "מתחילים בחינם",
     "heroBadge": "אפס שמירת מידע — לעולם",
     "heroPrivacyLine": "ללא חשבון. ללא אחסון. ללא יוצאים מן הכלל.",
     "howItWorksTitle": "שלושה שלבים. זה הכל.",
+    "stepLabel": "שלב",
     "step1Title": "העלו או הזינו",
     "step1Description": "צלמו את בדיקת הדם שלכם או הקלידו את הערכים. שתי הדרכים עובדות.",
     "step2Title": "ה-AI מנתח",
@@ -106,8 +110,16 @@
     "markerUnit": "יחידה",
     "addMarker": "הוסיפו סמן נוסף",
     "removeMarker": "הסרה",
+    "validationTitle": "אנא תקנו את הבעיות הבאות כדי להמשיך:",
+    "validationAge": "הזינו את הגיל שלכם",
+    "validationAgeRange": "הגיל חייב להיות בין 1 ל-120",
+    "validationGender": "בחרו את המגדר שלכם",
+    "validationFile": "העלו תמונה או PDF של בדיקת דם",
+    "validationMarkers": "הזינו לפחות סמן אחד עם שם וערך",
+    "validationIncomplete": "לחלק מהסמנים חסר שם או ערך",
     "analyzing": "מנתחים את התוצאות שלכם...",
     "selectMarker": "בחרו סמן...",
+    "markerNamePlaceholder": "הקלידו או בחרו סמן...",
     "enterValue": "הזינו ערך"
   },
   "results": {
@@ -154,14 +166,20 @@
     "yearlyFeature1": "ניתוחים ללא הגבלה",
     "yearlyFeature2": "הסברים מפורטים",
     "yearlyFeature3": "גישה ל-365 ימים",
+    "lifetime": "לכל החיים",
+    "lifetimeDesc": "שלמו פעם אחת, השתמשו לתמיד",
+    "lifetimeFeature1": "ניתוחים ללא הגבלה",
+    "lifetimeFeature2": "הסברים מפורטים",
+    "lifetimeFeature3": "גישה לכל החיים",
     "buyNow": "קנו עכשיו",
     "subscribe": "הירשמו כמנויים",
     "currentPlan": "התוכנית הנוכחית",
     "mostPopular": "הפופולרי ביותר",
-    "bestValue": "הכי משתלם"
+    "bestValue": "הכי משתלם",
+    "bestDeal": "העסקה הטובה ביותר"
   },
   "auth": {
-    "loginTitle": "התחברו ל-BloodTest AI",
+    "loginTitle": "התחברו ל-Bloodwork Online",
     "loginSubtitle": "גישה לחשבון ניתוח בדיקות הדם שלכם",
     "registerTitle": "צרו את החשבון שלכם",
     "registerSubtitle": "הירשמו כדי להתחיל לנתח את בדיקות הדם שלכם",

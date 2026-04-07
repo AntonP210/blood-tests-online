@@ -32,6 +32,8 @@ export function FAQSection() {
                 onClick={() =>
                   setOpenIndex(openIndex === index ? null : index)
                 }
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-${index}`}
                 className="flex w-full items-center justify-between px-4 py-4 text-left sm:px-6 sm:py-5"
               >
                 <span className="text-sm font-semibold sm:text-base">{t(faq.q)}</span>
@@ -42,7 +44,7 @@ export function FAQSection() {
                 />
               </button>
               {openIndex === index && (
-                <div className="px-4 pb-4 text-xs leading-relaxed text-muted-foreground sm:px-6 sm:pb-5 sm:text-sm">
+                <div id={`faq-${index}`} role="region" className="px-4 pb-4 text-xs leading-relaxed text-muted-foreground sm:px-6 sm:pb-5 sm:text-sm">
                   {t(faq.a)}
                 </div>
               )}

@@ -78,12 +78,17 @@ export async function checkPaymentStatus(
 
   // Fall back to Postgres
   const supabase = await createClient();
-  const { data: payments } = await supabase
+  const { data: payments, error } = await supabase
     .from("payments")
     .select("status, credits_remaining, expires_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(1);
+
+  if (error) {
+    console.error("Failed to check payment status:", error);
+    throw new Error("Unable to verify payment status. Please try again.");
+  }
 
   if (payments && payments.length > 0) {
     const payment = payments[0];
@@ -117,39 +122,51 @@ export async function tryConsumeUsage(
     return { allowed: true };
   }
 
-  // Check and consume one-time credit
+  // Check and consume one-time credit (atomic: decrement first, check after)
   const redis = getRedis();
   if (payment.isPaid && redis) {
     const remaining = await redis.decr(`credits:${userId}`);
     if (remaining >= 0) {
-      // Also update Postgres
       const supabase = await createClient();
       await supabase.rpc("decrement_credits", { p_user_id: userId });
       return { allowed: true };
     }
+    // Went negative — restore and fall through
     await redis.incr(`credits:${userId}`);
   }
 
-  // Check free usage limit
-  const usage = await getUsageCount(userId);
-  if (usage < FREE_LIMIT) {
-    // Increment in Redis
-    if (redis) {
-      await redis.incr(`usage:${userId}`);
+  // Check free usage limit (atomic: increment first, then check)
+  if (redis) {
+    const newCount = await redis.incr(`usage:${userId}`);
+    if (newCount <= FREE_LIMIT) {
+      const supabase = await createClient();
+      await supabase.from("usage").upsert(
+        {
+          user_id: userId,
+          free_analyses_used: newCount,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+      return { allowed: true };
     }
-
-    // Increment in Postgres (upsert)
-    const supabase = await createClient();
-    await supabase.from("usage").upsert(
-      {
-        user_id: userId,
-        free_analyses_used: usage + 1,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
-
-    return { allowed: true };
+    // Over limit — restore and deny
+    await redis.decr(`usage:${userId}`);
+  } else {
+    // No Redis — fall back to Postgres (non-atomic but best effort)
+    const usage = await getUsageCount(userId);
+    if (usage < FREE_LIMIT) {
+      const supabase = await createClient();
+      await supabase.from("usage").upsert(
+        {
+          user_id: userId,
+          free_analyses_used: usage + 1,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+      return { allowed: true };
+    }
   }
 
   return {
@@ -159,37 +176,25 @@ export async function tryConsumeUsage(
 }
 
 /**
- * Migrate anonymous session data to a user account (one-time on first login).
+ * Refund one usage unit (e.g. when analysis returned no markers).
  */
-export async function migrateSessionToUser(
-  oldSessionId: string,
-  userId: string
-): Promise<void> {
+export async function refundUsage(userId: string): Promise<void> {
   const redis = getRedis();
-  if (!redis) return;
-
-  // Migrate credits
-  const credits = await redis.get<number>(`credits:${oldSessionId}`);
-  if (credits && credits > 0) {
-    await redis.set(`credits:${userId}`, credits);
-    await redis.del(`credits:${oldSessionId}`);
+  if (redis) {
+    await redis.decr(`usage:${userId}`);
   }
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("usage")
+    .select("free_analyses_used")
+    .eq("user_id", userId)
+    .single();
 
-  // Migrate subscription
-  const sub = await redis.get<string>(`subscription:${oldSessionId}`);
-  if (sub === "active") {
-    const ttl = await redis.ttl(`subscription:${oldSessionId}`);
-    await redis.set(`subscription:${userId}`, "active", {
-      ex: ttl > 0 ? ttl : 60 * 60 * 24 * 32,
-    });
-    await redis.del(`subscription:${oldSessionId}`);
-  }
-
-  // Migrate usage count
-  const usage = await redis.get<number>(`usage:${oldSessionId}`);
-  if (usage) {
-    await redis.set(`usage:${userId}`, usage);
-    await redis.del(`usage:${oldSessionId}`);
+  if (data && data.free_analyses_used > 0) {
+    await supabase.from("usage").update({
+      free_analyses_used: data.free_analyses_used - 1,
+      updated_at: new Date().toISOString(),
+    }).eq("user_id", userId);
   }
 }
 
